@@ -13,8 +13,8 @@ Thetis Scheduler is a Python-based GUI application designed to automate frequenc
 
 ## Requirements
 - **Hardware**:
-  - Kenwood TS-2000 radio with a configured CAT interface accessible at `127.0.0.1:50001`.
-  - Windows operating system (tested on Windows with Python 3.13).
+  - Hermes Lite 2 with a configured CAT interface (Kenwood TS-200 CAT commands) accessible at `127.0.0.1:50001`.
+  - Windows operating system (tested on Windows 11 with Python 3.13.3).
 - **Software**:
   - Python 3.13 or later.
   - Python standard library modules: `tkinter`, `json`, `threading`, `socket`, `time`, `logging`, `traceback`.
