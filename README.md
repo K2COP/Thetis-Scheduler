@@ -7,7 +7,7 @@ Thetis Scheduler is a Python-based GUI application designed to automate frequenc
 - **Band-Aware Mode Selection**: Automatically selects USB or LSB based on the frequency’s amateur radio band (e.g., LSB for 80m, USB for 20m) if no mode is specified.
 - **Persistent Schedules**: Stores schedules in `schedules.json` for reuse across sessions.
 - **Logging**: Detailed logging of operations and errors to `scheduler.log` for debugging and monitoring.
-- **Thread-Safe CAT Commands**: Uses a thread lock to ensure reliable communication with the TS-2000 over a TCP socket (`127.0.0.1:50001`).
+- **Thread-Safe CAT Commands**: Uses a thread lock to ensure reliable communication with the TS-2000 CAT server over a TCP socket (`127.0.0.1:50001`).
 - **User-Friendly GUI**: Built with Tkinter, featuring input fields for frequency, mode, time, and days, plus a listbox to view and manage schedules.
 - **Error Handling**: Robust validation and error reporting for invalid inputs (e.g., frequencies outside 1–60 MHz) and connection issues.
 
