@@ -19,8 +19,6 @@ Thetis Scheduler is a Python-based GUI application designed to automate frequenc
   - Python 3.13 or later. Download python from https://python.org/download
   - Python standard library modules: `tkinter`, `json`, `threading`, `socket`, `time`, `logging`, `traceback`.
   - External library: `schedule` (install via `pip install schedule`). <--  from cmd box type "pip install schedule" (no quotation marks)
-- **Optional**:
-  - Virtual Audio Cable (VAC) for audio routing, configured as "Line 3 (Virtual Audio Cable)" with a 44.1 kHz sample rate (used in the script’s configuration but not directly implemented).
 
 ## Installation
 1. **Clone the Repository**:
