@@ -3,7 +3,7 @@
 Thetis Scheduler is a Python-based GUI application designed to automate frequency and mode changes for the Hermes Lite 2 running Thetis Software amateur radio via its CAT (Computer Aided Transceiver) interface. Built by K2COP, the application allows users to schedule radio frequencies at specific times and days, making it ideal for ham radio operators who need consistent, automated band and mode switching. The interface is built with Tkinter, and schedules are stored in a JSON file for persistence.
 
 ## Features
-- **Automated Scheduling**: Set frequency (e.g., 3.755 MHz) and mode (e.g., LSB) changes for specific times and days (Daily, Monday through Friday, or individual days).
+- **Automated Scheduling**: Set frequency (e.g., 3.777 MHz) and mode (e.g., LSB) changes for specific times and days (Daily, Monday through Friday, or individual days).
 - **Band-Aware Mode Selection**: Automatically selects USB or LSB based on the frequency’s amateur radio band (e.g., LSB for 80m, USB for 20m) if no mode is specified.
 - **Persistent Schedules**: Stores schedules in `schedules.json` for reuse across sessions.
 - **Logging**: Detailed logging of operations and errors to `scheduler.log` for debugging and monitoring.
