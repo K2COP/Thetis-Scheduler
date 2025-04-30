@@ -16,9 +16,9 @@ Thetis Scheduler is a Python-based GUI application designed to automate frequenc
   - Hermes Lite 2 with a configured CAT interface (Kenwood TS-200 CAT commands) accessible at `127.0.0.1:50001`.
   - Windows operating system (tested on Windows 11 with Python 3.13.3).
 - **Software**:
-  - Python 3.13 or later.
+  - Python 3.13 or later. Download python from https://python.org/download
   - Python standard library modules: `tkinter`, `json`, `threading`, `socket`, `time`, `logging`, `traceback`.
-  - External library: `schedule` (install via `pip install schedule`).
+  - External library: `schedule` (install via `pip install schedule`). <--  from cmd box type "pip install schedule" (no quotation marks)
 - **Optional**:
   - Virtual Audio Cable (VAC) for audio routing, configured as "Line 3 (Virtual Audio Cable)" with a 44.1 kHz sample rate (used in the script’s configuration but not directly implemented).
 
@@ -27,3 +27,4 @@ Thetis Scheduler is a Python-based GUI application designed to automate frequenc
    ```bash
    git clone https://github.com/your-username/Thetis-Scheduler.git
    cd Thetis-Scheduler
+type "python thetis_scheduler.py"  no quotes to start the script and if all went well the program window will open.
