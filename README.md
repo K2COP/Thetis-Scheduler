@@ -23,6 +23,6 @@ Thetis Scheduler is a Python-based GUI application designed to automate frequenc
 ## Installation
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-username/Thetis-Scheduler.git
+   git clone https://github.com/K2COP/Thetis-Scheduler.git
    cd Thetis-Scheduler
 type "python thetis_scheduler.py"  no quotes to start the script and if all went well the program window will open.
