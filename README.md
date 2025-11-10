@@ -25,4 +25,11 @@ Thetis Scheduler is a Python-based GUI application designed to automate frequenc
    ```bash
    git clone https://github.com/K2COP/Thetis-Scheduler.git
    cd Thetis-Scheduler
-type "python thetis_scheduler.py"  no quotes to start the script and if all went well the program window will open.
+type "python thetis_scheduler_GUI.py"  no quotes to start the script and if all went well the program window will open.
+or type "py thetis_scheduler_gui_dual.py" no quotes to start the script and all went well the program will open.
+
+11/10/25 Added option for second receiver (RX 2).  You just select whether the change will take place on RX 1 or RX 2 when creating a scheduled frequency change.
+
+Added Comments:  A few things have changed.  python.org has moved to installing python through Windows App Store.  This change has virtually no effect on the script. You will however still need to install "schedule" library through pip. The command would be similar to "pip install schedule" NO QUOTES! Once this is done the script will start normally.  
+
+One other note to mention.  The first time you start the script and add a scheduled frequency change you will have to end and restart the python script "thetis_scheduler_gui_dual.py"  This is because the schedule is saved in a file in the same directory as the script and has a suffix of .json  Once the schedule has been added and the script has been killed and restarted the .json file wil be read and everything will function as expected. For myself I open a cmd window (search box and type cmd youll see where to click to open the command prompt window) You can then "pin" the program to the task bar and click it after reboot. If you have typed the command to start the prompt previously just "up arror" on keyboard and you shoud see something like "py thetis_scheduler_gui_dual.py" at that point you can hit "enter" to run the script.
