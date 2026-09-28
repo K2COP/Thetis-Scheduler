@@ -22,7 +22,7 @@ Thetis Scheduler is a small Python program by K2COP that changes the frequency a
 
 > **Tested with:** the MI0BOT version of Thetis, where it works flawlessly. It has **not** been tested yet with the full version of Thetis from Apache-Labs.com. It should work there too if you make the CAT settings shown in [Thetis setup](#thetis-setup).
 
-**Contents:** [Which script?](#which-script-should-i-use) · [Features](#features) · [Requirements](#requirements) · [Installation](#installation) · [Running it](#running-it) · [Using it](#using-it) · [Thetis setup](#thetis-setup) · [Changes](#changes) · [License](#license)
+**Contents:** [Which script?](#which-script-should-i-use) · [Features](#features) · [Requirements](#requirements) · [Installation](#installation-windows) · [Running it](#running-it-windows) · [macOS](#macos-future-support) · [Using it](#using-it) · [Thetis setup](#thetis-setup) · [Changes](#changes) · [License](#license)
 
 ## Which script should I use?
 
@@ -48,7 +48,7 @@ Thetis Scheduler is a small Python program by K2COP that changes the frequency a
 - Python 3.13 or later (tested with 3.13.3). Get it from [python.org/downloads](https://www.python.org/downloads/) or the Microsoft Store. Either works.
 - The `schedule` library. Everything else the script uses comes with Python.
 
-## Installation
+## Installation (Windows)
 
 1. **Install Python** (see Requirements).
 2. **Install the `schedule` library.** Open a Command Prompt (type `cmd` in the Windows search box) and run:
@@ -61,7 +61,7 @@ Thetis Scheduler is a small Python program by K2COP that changes the frequency a
    git clone https://github.com/K2COP/Thetis-Scheduler.git
    ```
 
-## Running it
+## Running it (Windows)
 
 In the Command Prompt, go to the folder where the scripts are and start the program:
 
@@ -75,6 +75,35 @@ py thetis_scheduler_gui_dual.py
 Always start it from inside that folder. The program saves `schedules.json` and `scheduler.log` in whatever folder the Command Prompt is in, so starting it from somewhere else would make your schedules seem to disappear.
 
 **Tip:** you can pin Command Prompt to the taskbar. After a reboot, open it, press the **Up arrow** key to bring back the last command (for example `py thetis_scheduler_gui_dual.py`), and press **Enter**.
+
+## macOS (future support)
+
+> **Status:** not supported yet. Thetis is a Windows program, so for now Thetis Scheduler is meant for Windows. This section is here in case the scheduler is adapted later for macOS, for example to work with Zeus.
+
+What already works on a Mac:
+
+- The program window opens and runs on macOS, including Dark Mode. It was tried on macOS with Python 3.14.
+
+What would still need to happen:
+
+- The scheduler controls the radio by connecting to a Kenwood TS-2000 style CAT server at `127.0.0.1`, port `50001`. For it to work with a Mac SDR program such as Zeus, that program would need to offer a CAT server the scheduler can connect to over the network. This has not been checked or tested yet.
+- If it does, the address and port can be changed near the top of `thetis_scheduler_gui_dual.py` (`CAT_SERVER_HOST` and `CAT_SERVER_PORT`).
+
+If you want to try it on a Mac anyway, open Terminal and run:
+
+1. **Install Python.** The installer from [python.org/downloads](https://www.python.org/downloads/) includes everything the window needs. If you use Homebrew instead, run `brew install python python-tk`.
+2. **Install the `schedule` library** in its own environment:
+   ```
+   python3 -m venv ~/thetis-venv
+   ~/thetis-venv/bin/pip install schedule
+   ```
+3. **Start the program** from inside the Thetis-Scheduler folder:
+   ```
+   cd Thetis-Scheduler
+   ~/thetis-venv/bin/python thetis_scheduler_gui_dual.py
+   ```
+
+Note: if your Mac is set to dark appearance, the normal (light) mode will already look dark gray, and Dark Mode makes it pure black.
 
 ## Using it
 
@@ -108,6 +137,7 @@ The scheduler connects to Thetis's CAT server at `127.0.0.1` on port **50001**. 
 ## Changes
 
 - **2026-09-28:** Added a Dark Mode switch to `thetis_scheduler_gui_dual.py`.
+- **2026-09-28:** Added notes on possible future macOS support.
 - **2025-11-10:** Added `thetis_scheduler_gui_dual.py` with a choice of RX1 or RX2 for each scheduled change.
 - **2025-06:** First release, `thetis_scheduler_GUI.py`.
 
