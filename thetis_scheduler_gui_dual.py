@@ -428,6 +428,73 @@ def update_button_states():
     except Exception as e:
         logging.error(f"Error updating button states: {e}\n{traceback.format_exc()}")
 
+# Dark / Light mode toggle
+style = ttk.Style(root)
+LIGHT_THEME = style.theme_use()
+LIGHT_COLORS = {"bg": root.cget("bg"), "list_bg": schedules_listbox.cget("bg"), "list_fg": schedules_listbox.cget("fg")}
+DARK_BG = "#000000"
+DARK_FIELD = "#1e1e1e"
+DARK_FG = "#ffffff"
+dark_mode_var = tk.BooleanVar(value=False)
+
+def get_popdown_listbox(combo):
+    popdown = combo.tk.eval(f"ttk::combobox::PopdownWindow {combo}")
+    return f"{popdown}.f.l"
+
+# Remember the original dropdown-list colors so light mode can restore them
+try:
+    _pd = get_popdown_listbox(mode_combo)
+    LIGHT_POPDOWN = {opt: mode_combo.tk.call(_pd, "cget", "-" + opt)
+                     for opt in ("background", "foreground", "selectbackground", "selectforeground")}
+except tk.TclError:
+    LIGHT_POPDOWN = None
+
+def style_combobox_popdowns(colors):
+    """Color the dropdown lists of the comboboxes."""
+    if not colors:
+        return
+    for combo in (mode_combo, days_combo, rx_combo):
+        try:
+            args = []
+            for opt, val in colors.items():
+                args += ["-" + opt, val]
+            combo.tk.call(get_popdown_listbox(combo), "configure", *args)
+        except tk.TclError:
+            pass
+
+def apply_theme():
+    try:
+        if dark_mode_var.get():
+            # 'clam' respects custom colors on all platforms (aqua on macOS does not)
+            style.theme_use("clam")
+            style.configure(".", background=DARK_BG, foreground=DARK_FG, fieldbackground=DARK_FIELD,
+                            insertcolor=DARK_FG, bordercolor="#555555", lightcolor=DARK_BG, darkcolor=DARK_BG)
+            style.configure("TButton", background="#333333", foreground=DARK_FG)
+            style.map("TButton", background=[("disabled", "#1a1a1a"), ("active", "#555555")],
+                      foreground=[("disabled", "#777777")])
+            style.configure("TCombobox", background="#333333", arrowcolor=DARK_FG,
+                            selectbackground="#444444", selectforeground=DARK_FG)
+            style.map("TCombobox", fieldbackground=[("readonly", DARK_FIELD)], foreground=[("readonly", DARK_FG)])
+            style.map("TCheckbutton", background=[("active", DARK_BG)], indicatorcolor=[("selected", DARK_FG), ("!selected", DARK_FIELD)])
+            bg, list_bg, list_fg = DARK_BG, DARK_FIELD, DARK_FG
+            style_combobox_popdowns({"background": DARK_FIELD, "foreground": DARK_FG,
+                                     "selectbackground": "#444444", "selectforeground": DARK_FG})
+        else:
+            style.theme_use(LIGHT_THEME)
+            bg, list_bg, list_fg = LIGHT_COLORS["bg"], LIGHT_COLORS["list_bg"], LIGHT_COLORS["list_fg"]
+            style_combobox_popdowns(LIGHT_POPDOWN)
+        root.config(bg=bg)
+        for frame in (schedules_frame, list_frame, control_frame):
+            frame.config(bg=bg)
+        schedules_listbox.config(bg=list_bg, fg=list_fg)
+        remove_disclaimer.config(foreground="red")
+        logging.info(f"Theme set to {'dark' if dark_mode_var.get() else 'light'}")
+    except Exception as e:
+        logging.error(f"Error applying theme: {e}\n{traceback.format_exc()}")
+
+dark_mode_check = ttk.Checkbutton(control_frame, text="Dark Mode", variable=dark_mode_var, command=apply_theme)
+dark_mode_check.pack(side='right', padx=5)
+
 # Initial update of listbox
 update_schedules_listbox()
 
