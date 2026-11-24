@@ -348,30 +348,24 @@ def update_schedules_listbox():
 control_frame = tk.Frame(root)
 control_frame.pack(side='bottom', fill='x', pady=10)
 
-remove_disclaimer = ttk.Label(control_frame, text="Stop scheduler before removing a schedule", foreground="red")
-remove_disclaimer.pack(side='left', padx=5)
-
 def remove_schedule():
     try:
-        if not scheduler_running:
-            selected = schedules_listbox.curselection()
-            if selected:
-                index = selected[0]
-                schedules = load_schedules()
-                if 0 <= index < len(schedules):
-                    del schedules[index]
-                    save_schedules(schedules)
-                    update_schedules_listbox()
-                    schedule.clear()
-                    for s in load_schedules():
-                        create_schedule(s["freq"], s["mode"], s["time"], s["days"], s.get("rx", "RX1"))
-                    messagebox.showinfo("Success", "Schedule removed")
-                else:
-                    messagebox.showerror("Error", "Invalid selection")
+        selected = schedules_listbox.curselection()
+        if selected:
+            index = selected[0]
+            schedules = load_schedules()
+            if 0 <= index < len(schedules):
+                del schedules[index]
+                save_schedules(schedules)
+                update_schedules_listbox()
+                schedule.clear()
+                for s in load_schedules():
+                    create_schedule(s["freq"], s["mode"], s["time"], s["days"], s.get("rx", "RX1"))
+                messagebox.showinfo("Success", "Schedule removed")
             else:
-                messagebox.showerror("Error", "No schedule selected")
+                messagebox.showerror("Error", "Invalid selection")
         else:
-            messagebox.showerror("Error", "Stop the scheduler before removing a schedule")
+            messagebox.showerror("Error", "No schedule selected")
     except Exception as e:
         logging.error(f"Error removing schedule: {e}\n{traceback.format_exc()}")
         messagebox.showerror("Error", f"Error removing schedule: {e}")
@@ -487,7 +481,6 @@ def apply_theme():
         for frame in (schedules_frame, list_frame, control_frame):
             frame.config(bg=bg)
         schedules_listbox.config(bg=list_bg, fg=list_fg)
-        remove_disclaimer.config(foreground="red")
         logging.info(f"Theme set to {'dark' if dark_mode_var.get() else 'light'}")
     except Exception as e:
         logging.error(f"Error applying theme: {e}\n{traceback.format_exc()}")
