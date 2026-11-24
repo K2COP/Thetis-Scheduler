@@ -43,7 +43,7 @@ Thetis Scheduler is a small Python program by K2COP that changes the frequency a
 
 ## Requirements
 
-- A Hermes Lite 2 running Thetis, with the CAT server set up on port `50001` (see [Thetis setup](#thetis-setup)).
+- A Hermes Lite 2 running Thetis, with the CAT server set up on port `50004` (see [Thetis setup](#thetis-setup)).
 - Windows, running on the same computer as Thetis. It has been tested on Windows 11.
 - Python 3.13 or later (tested with 3.13.3). Get it from [python.org/downloads](https://www.python.org/downloads/) or the Microsoft Store. Either works.
 - The `schedule` library. Everything else the script uses comes with Python.
@@ -86,7 +86,7 @@ What already works on a Mac:
 
 What would still need to happen:
 
-- The scheduler controls the radio by connecting to a Kenwood TS-2000 style CAT server at `127.0.0.1`, port `50001`. For it to work with a Mac SDR program such as Zeus, that program would need to offer a CAT server the scheduler can connect to over the network. This has not been checked or tested yet.
+- The scheduler controls the radio by connecting to a Kenwood TS-2000 style CAT server at `127.0.0.1`, port `50004`. For it to work with a Mac SDR program such as Zeus, that program would need to offer a CAT server the scheduler can connect to over the network. This has not been checked or tested yet.
 - If it does, the address and port can be changed near the top of `thetis_scheduler_gui_dual.py` (`CAT_SERVER_HOST` and `CAT_SERVER_PORT`).
 
 If you want to try it on a Mac anyway, open Terminal and run:
@@ -115,15 +115,28 @@ Note: if your Mac is set to dark appearance, the normal (light) mode will alread
 6. Click **Add Schedule**. It appears in the Scheduled Tasks list.
 7. Click **Start Scheduler**. Changes happen only while the scheduler is running and the program is open.
 
-To remove a schedule, click **Stop Scheduler** first, select the schedule in the list, and click **Remove Selected Schedule**.
+To remove a schedule, select it in the list and click **Remove Selected Schedule**. You don't need to stop the scheduler first.
 
 **First-time note:** the first time you add a scheduled change, close the program and start it again so it reads the new `schedules.json` file. After that, everything works as expected.
 
 ## Thetis setup
 
-The scheduler connects to Thetis's CAT server at `127.0.0.1` on port **50001**. In Thetis, open **Setup** and change the CAT settings to match the screenshots below.
+The scheduler connects to Thetis's TCP/IP CAT server at `127.0.0.1` on port **50004**.
 
-> **Important:** two ports cannot both be set to 50001. If another CAT port is already using 50001, change that one, or it will not work.
+In Thetis:
+
+1. Open **Setup → Serial/Network/Midi CAT → Network**.
+2. In the **TCP / IP CAT Server** box, set **Bind IP:Port** to `127.0.0.1:50004`.
+3. Tick **Server Running**, then click **Apply**.
+4. On the **Options** tab, set **ID as** to **TS-2000**.
+
+The screenshots below show these settings. The CAT server screenshot was taken before the port change, so it still shows 50001. Use 50004.
+
+> **Upgrading from an older version?** Earlier versions of the scheduler used port **50001**. That port is often taken by other programs that use Thetis CAT, so the scheduler now uses **50004**. If you upgrade, change the Thetis CAT server port to `127.0.0.1:50004` as shown above, or the scheduler won't be able to reach Thetis.
+>
+> If you really need to keep a different port, change `CAT_SERVER_PORT` near the top of the script to match it.
+
+> **Important:** only one program can use a given port. If something else already uses 50004, either move that program to another port or pick a free port for the scheduler and set it in both Thetis and `CAT_SERVER_PORT`.
 
 <table align="center">
   <tr>
@@ -136,6 +149,8 @@ The scheduler connects to Thetis's CAT server at `127.0.0.1` on port **50001**. 
 
 ## Changes
 
+- **2026-11-24:** The default CAT port is now **50004** instead of 50001, to avoid clashes with other Thetis CAT programs. See [Thetis setup](#thetis-setup).
+- **2026-11-24:** Removed the red "Stop scheduler before removing a schedule" message, so the window is smaller. Schedules can now be removed while the scheduler is running. Applies to both scripts.
 - **2026-09-28:** Added a Dark Mode switch to `thetis_scheduler_gui_dual.py`.
 - **2026-09-28:** Added notes on possible future macOS support.
 - **2025-11-10:** Added `thetis_scheduler_gui_dual.py` with a choice of RX1 or RX2 for each scheduled change.

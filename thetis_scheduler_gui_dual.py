@@ -11,7 +11,7 @@ import traceback
 
 # Configuration
 CAT_SERVER_HOST = "127.0.0.1"
-CAT_SERVER_PORT = 50001  # TS-2000 CAT port
+CAT_SERVER_PORT = 50004  # TS-2000 CAT port
 SAMPLE_RATE = 44100
 VAC_DEVICE = "Line 3 (Virtual Audio Cable)"
 
