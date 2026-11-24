@@ -29,7 +29,7 @@ Thetis Scheduler is a small Python program by K2COP that changes the frequency a
 | Script | What it does |
 | --- | --- |
 | `thetis_scheduler_gui_dual.py` | **Recommended.** Supports both receivers (RX1 and RX2) and has a Dark Mode switch. |
-| `thetis_scheduler_GUI.py` | The original version. RX1 only, no dark mode. |
+| `thetis_scheduler_GUI.py` | The original version. RX1 only. Also has the Dark Mode switch. |
 
 ## Features
 
@@ -149,6 +149,7 @@ The screenshots below show these settings. The CAT server screenshot was taken b
 
 ## Changes
 
+- **2026-11-24:** Added the Dark Mode switch to `thetis_scheduler_GUI.py`, the same as in the dual script.
 - **2026-11-24:** The default CAT port is now **50004** instead of 50001, to avoid clashes with other Thetis CAT programs. See [Thetis setup](#thetis-setup).
 - **2026-11-24:** Removed the red "Stop scheduler before removing a schedule" message, so the window is smaller. Schedules can now be removed while the scheduler is running. Applies to both scripts.
 - **2026-09-28:** Added a Dark Mode switch to `thetis_scheduler_gui_dual.py`.
