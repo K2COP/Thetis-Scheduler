@@ -149,6 +149,7 @@ The screenshots below show these settings. The CAT server screenshot was taken b
 
 ## Changes
 
+- **2026-11-24:** Fixed the scheduler not changing mode (for example 14.236 USB to 7.205 stayed on USB). The scheduler waited for a reply to the frequency command, which a TS-2000 never sends, so it gave up before sending the mode. Mode is now sent after the frequency and read back to confirm it. RX2 schedules in the dual script now set RX2's mode with Thetis's `ZZME` command instead of changing RX1's mode. The previous version is saved as the [`before-mode-fix`](https://github.com/K2COP/Thetis-Scheduler/tree/before-mode-fix) tag.
 - **2026-11-24:** Added the Dark Mode switch to `thetis_scheduler_GUI.py`, the same as in the dual script.
 - **2026-11-24:** The default CAT port is now **50004** instead of 50001, to avoid clashes with other Thetis CAT programs. See [Thetis setup](#thetis-setup).
 - **2026-11-24:** Removed the red "Stop scheduler before removing a schedule" message, so the window is smaller. Schedules can now be removed while the scheduler is running. Applies to both scripts.

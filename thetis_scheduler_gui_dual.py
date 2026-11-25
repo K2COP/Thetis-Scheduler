@@ -44,8 +44,20 @@ except Exception as e:
 # Thread lock for CAT commands
 cat_lock = threading.Lock()
 
-def send_cat_command(command, retries=3, delay=0.5):
-    """Send a CAT command to TS-2000 and return the response."""
+# TS-2000 mode codes for the MD command (RX1), and Thetis's own codes for
+# the ZZME command (RX2 mode; the TS-2000 command set has no RX2 mode command)
+TS2000_MODES = {"LSB": "1", "USB": "2"}
+THETIS_RX2_MODES = {"LSB": "00", "USB": "01"}
+
+def send_cat_command(command, expect_reply=False, retries=3, delay=0.5):
+    """Send one CAT command to Thetis and return the reply.
+
+    Like a real TS-2000, Thetis only answers queries such as "MD;". Set
+    commands such as "FA00007205000;" or "MD1;" get no reply at all unless
+    they are rejected ("?;"), so for a set command a quiet line means success
+    and "" is returned. Returns None if the command could not be sent or the
+    radio rejected it.
+    """
     logging.debug(f"Sending CAT command: {command}")
     for attempt in range(retries):
         try:
@@ -53,8 +65,17 @@ def send_cat_command(command, retries=3, delay=0.5):
                 s.settimeout(3)
                 s.connect((CAT_SERVER_HOST, CAT_SERVER_PORT))
                 s.sendall(command.encode())
-                time.sleep(0.2)
-                response = s.recv(1024).decode().strip()
+                if not expect_reply:
+                    s.settimeout(0.3)  # only listen briefly for a "?;" rejection
+                try:
+                    response = s.recv(1024).decode().strip()
+                except socket.timeout:
+                    if expect_reply:
+                        raise
+                    response = ""
+                if response.startswith("?"):
+                    logging.error(f"Radio rejected CAT command {command} (reply {response})")
+                    return None
                 logging.debug(f"Received response: {response}")
                 return response
         except Exception as e:
@@ -65,14 +86,46 @@ def send_cat_command(command, retries=3, delay=0.5):
     logging.error(f"Failed to send CAT command after {retries} attempts: {command}")
     return None
 
+def set_mode(mode, rx="RX1", attempts=3):
+    """Set USB/LSB, then read it back to make sure it stuck.
+
+    Call this after the frequency change. When Thetis moves to another band it
+    restores the mode last used on that band, which can undo a mode sent too
+    early, so a mismatch on read-back is retried.
+    """
+    mode = (mode or "").strip().upper()
+    if mode not in TS2000_MODES:
+        logging.error(f"Unsupported mode: {mode!r}")
+        return False
+    if rx == "RX2":
+        set_command, query = f"ZZME{THETIS_RX2_MODES[mode]};", "ZZME;"
+    else:
+        set_command, query = f"MD{TS2000_MODES[mode]};", "MD;"
+    for attempt in range(1, attempts + 1):
+        logging.info(f"Setting {rx} mode: {mode} ({set_command})")
+        if send_cat_command(set_command) is None:
+            logging.error("Mode command failed")
+            return False
+        time.sleep(0.5)
+        reply = send_cat_command(query, expect_reply=True)
+        if not reply:
+            logging.warning(f"Could not read back {rx} mode; sent {set_command} but it is unconfirmed")
+            return True
+        if set_command in reply:
+            logging.info(f"{rx} mode confirmed: {reply}")
+            return True
+        logging.warning(f"{rx} mode not set yet (radio reports {reply}), attempt {attempt} of {attempts}")
+        time.sleep(1)
+    logging.error(f"Radio did not change {rx} mode to {mode}")
+    return False
+
 def set_frequency_and_mode(freq_hz, mode):
     """Set the frequency and mode on TS-2000."""
     with cat_lock:
         try:
             freq_str = f"{int(freq_hz):011d}"
             freq_command = f"FA{freq_str};"
-            mode_command = "MD2;" if mode.upper() == "USB" else "MD1;"
-            
+
             logging.info(f"Setting frequency: {freq_hz} Hz")
             response = send_cat_command(freq_command)
             if response is None:
@@ -81,13 +134,7 @@ def set_frequency_and_mode(freq_hz, mode):
             
             time.sleep(1.5)
             
-            logging.info(f"Setting mode: {mode}")
-            response = send_cat_command(mode_command)
-            if response is None:
-                logging.error("Mode command failed")
-                return False
-            
-            return True
+            return set_mode(mode, "RX1")
         except Exception as e:
             logging.error(f"Error in set_frequency_and_mode: {e}\n{traceback.format_exc()}")
             return False
@@ -140,25 +187,21 @@ def apply_schedule(freq_hz, mode, time_str, days, rx="RX1"):
                 freq_command = f"FA{freq_str};"  # VFO A
                 rx_switch = "FR0;"               # Select RX1 (optional)
 
-            mode_command = "MD2;" if mode.upper() == "USB" else "MD1;"
-
-            # Set frequency
+            # Set frequency (set commands get no reply, so only None is a failure)
             response = send_cat_command(freq_command)
-            if not response:
+            if response is None:
                 logging.error("Frequency command failed")
                 return False
             time.sleep(1.5)
 
-            # Set mode
-            response = send_cat_command(mode_command)
-            if not response:
-                logging.error("Mode command failed")
+            # Set mode, after the frequency so Thetis's band memory can't undo it
+            if not set_mode(mode, rx):
                 return False
             time.sleep(0.5)
 
             # Switch RX
             response = send_cat_command(rx_switch)
-            if not response:
+            if response is None:
                 logging.error("RX switch failed")
                 return False
 
